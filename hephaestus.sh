@@ -7,7 +7,7 @@
 #############################
 
 ###############################################
-#MUST USE SUDO OR RUN AS ROOT
+#MUST RUN AS ROOT
 #Must have apt-get or yum installed
 ###############################################
 
@@ -42,7 +42,7 @@ echo '###########################'
 echo ""
 #Tests operating system ID and if CentOS runs all commands for CentOS
 if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
-	
+
 	echo '######################'
 	echo "Checking for Updates"
 	echo '######################'
@@ -50,7 +50,7 @@ if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
 	echo '####################'
 	echo "Available Updates:"
 	echo '####################'
-	
+
 	yum check-update | awk '(NR >=4) {print $1;}' | sed ':a;N;$!ba;s/\n/,/g'
 	while true; do
 		read -p "Would you like to install these updates?" yn
@@ -69,12 +69,12 @@ if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
 	echo '##############'
 	echo "Disable IPV6"
 	echo '##############'
-	
+
 	if grep -Fxq "net.ipv6.conf.all.disable_ipv6 = 1" /etc/sysctl.conf &> /dev/null; then
 		echo "IPv6 is already disabled."
 	else
 		while true; do
-			read -p "Would you like to disable IPv6?" yn	
+			read -p "Would you like to disable IPv6?" yn
 			case $yn in
 				[Yy]* ) echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
 					echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
@@ -93,7 +93,7 @@ if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
 	echo '########################################################'
 
         if grep -Fxq "root:x:0:0:root:/root:/sbin/nologin" /etc/passwd &> /dev/null; then
-                 echo "Root shell is already disabled.I"	
+                 echo "Root shell is already disabled.I"
 	else
 		while true; do
 			read -p "Would you like to disable root shell?" yn
@@ -189,7 +189,7 @@ if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
 	echo "!!!Caution!!!"
 	echo "Only do this if you are on a web or mail server."
 	echo '##################################################'
-	
+
 	while true; do
         read -p "Would you like to remove X Windows?" yn
         case $yn in
@@ -200,15 +200,15 @@ if [ "$os" == "CentOS" ] || [ "$os" == "Red Hat" ]; then
 				break;;
 			[Nn]* ) break;;
 			* ) echo "Please answer yes or no.";;
-		esac	
+		esac
 		break;;
             [Nn]* ) break;;
             * ) echo "Please answer yes or no.";;
         esac
 	done
-	
+
 elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
-	
+
 	echo '######################'
 	echo "Checking for Updates"
 	echo '######################'
@@ -216,7 +216,7 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 	echo '####################'
 	echo "Available Updates:"
 	echo '####################'
-	
+
 	apt-get update &> /dev/null
 	apt list --upgradeable
 	while true; do
@@ -230,16 +230,16 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 	done
 
 	echo ""
-	
+
 	echo '##############'
 	echo "Disable IPV6"
 	echo '##############'
-	
+
 	if grep -Fxq "alias net-pf-10 off" /etc/modprobe.d/aliases &> /dev/null; then
 		echo "IPv6 is already disabled."
 	else
 		while true; do
-			read -p "Would you like to disable IPv6?" yn	
+			read -p "Would you like to disable IPv6?" yn
 			case $yn in
 				[Yy]* ) echo "alias net-pf-10 off" >> /etc/modprobe.d/aliases
 					echo "alias ipv6 off"
@@ -250,7 +250,7 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 			esac
 		done
 	fi
-	
+
 	echo '########################################################'
 	echo "Disbale Root Shell"
 	echo "Warning: Make sure main user is in sudoers file first!"
@@ -269,7 +269,7 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 			esac
 		done
 	fi
-	
+
 	echo '######################'
 	echo "Limit Password Reuse"
 	echo '######################'
@@ -284,7 +284,7 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 			* ) echo "Please answer yes or no.";;
 		esac
 	done
-	
+
 	echo '####################'
 	echo "Max Logon Attempts"
 	echo '####################'
@@ -349,12 +349,11 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
 	echo '##################################################'
 	echo "Remove X Windows"
 	echo "!!!Caution!!!"
-	echo "Only do this if you are on a web or mail server."
 	echo '##################################################'
 	while true; do
         read -p "Would you like to remove X Windows?" yn
         case $yn in
-		[Yy]* ) apt-get --assume-no remove libx11.* libqt.*
+					[Yy]* ) apt-get --assume-no remove libx11.* libqt.*
 			read -p "This is what will be removed and installed. Are you sure you want to continue?" yn
 			case $yn in
 				[Yy]* ) apt-get purge libx11.* libqt.*
@@ -369,7 +368,7 @@ elif [ "$os" == "Ubuntu" ] || [ "$os" == "Debian" ]; then
             * ) echo "Please answer yes or no.";;
         esac
 	done
-	
+
 else
 	echo "$os is not supported."
 	exit 1;
